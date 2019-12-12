@@ -57,7 +57,7 @@ namespace glm
 		{
 			GLM_STATIC_ASSERT(std::numeric_limits<genType>::is_iec559, "'trunc' only accept floating-point inputs");
 
-			return x < static_cast<genType>(0) ? -std::floor(-x) : std::floor(x);
+			return x < static_cast<genType>(0) ? -std::floor(-x) : std::Floor(x);
 		}
 #	endif
 
@@ -225,7 +225,7 @@ namespace detail
 	{
 		GLM_FUNC_QUALIFIER static vecType<T, P> call(vecType<T, P> const & x)
 		{
-			return x - floor(x);
+			return x - Floor(x);
 		}
 	};
 
@@ -339,12 +339,12 @@ namespace detail
 		return detail::compute_sign<T, P, vecType, std::numeric_limits<T>::is_iec559, detail::is_aligned<P>::value>::call(x);
 	}
 
-	// floor
+	// Floor
 	using ::std::floor;
 	template <typename T, precision P, template <typename, precision> class vecType>
 	GLM_FUNC_QUALIFIER vecType<T, P> floor(vecType<T, P> const & x)
 	{
-		GLM_STATIC_ASSERT(std::numeric_limits<T>::is_iec559, "'floor' only accept floating-point inputs.");
+		GLM_STATIC_ASSERT(std::numeric_limits<T>::is_iec559, "'Floor' only accept floating-point inputs.");
 		return detail::compute_floor<T, P, vecType, detail::is_aligned<P>::value>::call(x);
 	}
 

@@ -116,7 +116,14 @@ target_link_libraries(gl9_scene ppgso shaders)
 install(TARGETS gl9_scene DESTINATION .)
 
 # project target
-add_executable(project src/project/tanks.cpp)
+add_executable(project
+        src/project/object.cpp
+        src/project/tank.cpp
+        src/project/projectile.cpp
+        src/project/scene.cpp
+        src/project/camera.cpp
+        src/project/tanks.cpp
+        src/project/desert.cpp src/project/desert.h src/project/HealtBar.cpp src/project/HealtBar.h src/project/OnTurnIndicator.cpp src/project/OnTurnIndicator.h)
 target_link_libraries(project ppgso shaders)
 install (TARGETS project DESTINATION .)
 
