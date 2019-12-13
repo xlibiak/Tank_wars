@@ -4,27 +4,27 @@
 #include "object.h"
 
 /*!
- * Object representing a rocket projectile that will accelerate from the ship one created
+ * Simple explosion object that will render expanding transparent geometry in the scene with additive blending
  */
-class Projectile final : public Object {
+class Explosion final : public Object {
 private:
   static std::unique_ptr<ppgso::Shader> shader;
   static std::unique_ptr<ppgso::Mesh> mesh;
   static std::unique_ptr<ppgso::Texture> texture;
 
   float age{0.0f};
+  float maxAge{0.2f};
+  glm::vec3 rotMomentum;
 public:
-    glm::vec3 rotMomentum;
-    glm::vec3 speed;
-    glm::vec3 windAtStart;
-    bool hit;
-  /*
-   * Create new projectile
-   */
-  Projectile();
+  glm::vec3 speed;
 
   /*!
-   * Update projectile position
+   * Create new Explosion
+   */
+  Explosion();
+
+  /*!
+   * Update explosion
    * @param scene Scene to update
    * @param dt Time delta
    * @return true to delete the object
@@ -32,14 +32,9 @@ public:
   bool update(Scene &scene, float dt) override;
 
   /*!
-   * Render projectile
+   * Render explosion
    * @param scene Scene to render in
    */
   void render(Scene &scene) override;
-
-  /*!
-   * Destroy the projectile
-   */
-  void destroy();
 };
 

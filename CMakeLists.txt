@@ -123,7 +123,17 @@ add_executable(project
         src/project/scene.cpp
         src/project/camera.cpp
         src/project/tanks.cpp
-        src/project/desert.cpp src/project/desert.h src/project/HealtBar.cpp src/project/HealtBar.h src/project/OnTurnIndicator.cpp src/project/OnTurnIndicator.h)
+        src/project/desert.cpp
+        src/project/desert.h
+        src/project/HealtBar.cpp
+        src/project/HealtBar.h
+        src/project/OnTurnIndicator.cpp
+        src/project/OnTurnIndicator.h
+        src/project/Wind.cpp
+        src/project/Wind.h
+        src/project/EndBackground.cpp
+        src/project/EndBackground.h
+        src/project/explosion.cpp)
 target_link_libraries(project ppgso shaders)
 install (TARGETS project DESTINATION .)
 

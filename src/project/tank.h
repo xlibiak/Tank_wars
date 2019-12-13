@@ -56,6 +56,8 @@ public:
 
     std::unique_ptr<HealtBar> healtBar;
 
+    std::string name;
+
 };
 
 

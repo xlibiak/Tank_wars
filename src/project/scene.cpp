@@ -2,7 +2,7 @@
 
 void Scene::update(float time) {
   camera->update();
-
+    if(wind!= nullptr) wind->update(*this,time);
   // Use iterator to update all objects so we can remove while iterating
   auto i = std::begin(objects);
 
@@ -17,6 +17,7 @@ void Scene::update(float time) {
 }
 
 void Scene::render() {
+    if(wind!= nullptr and !shooting) wind->render(*this);
   // Simply render all objects
   for ( auto& obj : objects )
     obj->render(*this);

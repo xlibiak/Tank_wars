@@ -30,9 +30,12 @@ bool Projectile::update(Scene &scene, float dt) {
   // Increase age
   age += dt;
 
+    rotation += rotMomentum * dt;
+
   // Gravitation
   speed += glm::vec3{0.0f, -3.f, 0.0f} * dt;
-  rotation += rotMomentum * dt;
+  // Wind
+  speed += windAtStart * dt;
 
   // Move the projectile
   position += speed * dt;

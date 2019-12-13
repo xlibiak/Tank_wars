@@ -5,6 +5,7 @@
 #include "tank.h"
 #include "scene.h"
 #include "projectile.h"
+#include "explosion.h"
 
 #include <shaders/diffuse_vert_glsl.h>
 #include <shaders/diffuse_frag_glsl.h>
@@ -40,16 +41,18 @@ bool Tank::update(Scene &scene, float dt) {
         auto projectile = dynamic_cast<Projectile*>(obj.get());
         if (projectile) {
             if (onTurn and distance(position, projectile->position) < 1) {
-                // Explode
-                /*auto explosion = std::make_unique<Explosion>();
-                explosion->position = position;
-                explosion->scale = scale * 3.0f;
-                scene.objects.push_back(move(explosion));*/
                 projectile->hit = true;
+                // Explode
+                auto explosion = std::make_unique<Explosion>();
+                explosion->position = position;;
                 // Die
                 if(hitted){
+                    explosion->scale = scale * 3.0f;
+                    scene.objects.push_back(move(explosion));
                     return false;
                 } else{
+                    explosion->scale = scale * 2.0f;
+                    scene.objects.push_back(move(explosion));
                     healtBar->retexture();
                     hitted = 1;
                 }
@@ -62,11 +65,13 @@ bool Tank::update(Scene &scene, float dt) {
     if(scene.keyboard[GLFW_KEY_SPACE]) {
         if(onTurn){
             onTurn= false;
+            scene.shooting=true;
             auto projectile = std::make_unique<Projectile>();
             projectile->position = position + glm::vec3(rotation.z/10,0.3f,0.0f);
             projectile->rotation = glm::vec3(0.0f, -rotation.z/(cannonHeight+1), 0.0f);
-            projectile->speed =  glm::vec3(rotation.z*2, cannonHeight, 0.0f);
-            projectile->rotMomentum=  glm::vec3(0.0f,-rotation.z/2,0.0f);
+            projectile->speed = glm::vec3(rotation.z*2, cannonHeight, 0.0f);
+            projectile->rotMomentum = glm::vec3(0.0f,-rotation.z/2,0.0f);
+            projectile->windAtStart = {scene.wind->scale.z*2*scene.wind->direction, 0.f, 0.f};
             scene.objects.push_back(move(projectile));
             for ( auto& obj : scene.objects ) {
                 if (obj.get() == this)
@@ -74,14 +79,22 @@ bool Tank::update(Scene &scene, float dt) {
                 auto tank = dynamic_cast<Tank*>(obj.get());
                 if (tank) {
                     tank->onTurn=true;
-                    scene.camera->position = glm::vec3((position.x + tank->position.x)/2,5.0f,-25.0f);
+                    scene.camera->prevPosition = scene.camera->position;
+                    scene.camera->nextPosition = glm::vec3((position.x + tank->position.x)/2,5.0f,-25.0f);
+                    scene.camera->tLerp = 0;
                 }
             }
+            scene.wind->generateWindDirection();
         }
     }
 
     if (onTurn) {
-        scene.camera->position=position + glm::vec3(0.0f,5.0f,-10.0f);
+        scene.camera->prevPosition = scene.camera->position;
+        scene.camera->nextPosition = position + glm::vec3(0.0f,5.0f,-10.0f);
+        scene.camera->tLerp = 0;
+
+        scene.wind->position = position + glm::vec3(-rotation.z*2,9.0f,0.0f);
+        scene.shooting = false;
         // Hit detection
         /*for ( auto& obj : scene.objects ) {
             // Ignore self in scene

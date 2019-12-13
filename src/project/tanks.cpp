@@ -9,6 +9,8 @@
 #include "tank.h"
 #include "scene.h"
 #include "desert.h"
+#include "Wind.h"
+#include "EndBackground.h"
 
 const unsigned int SIZE = 512;
 
@@ -18,7 +20,9 @@ const unsigned int SIZE = 512;
 class SceneWindow : public ppgso::Window {
 private:
     Scene scene;
+    Scene endScene;
     bool animate = true;
+    int tankCount;
 
     /*!
      * Reset and initialize the game scene
@@ -35,7 +39,7 @@ private:
         // Add space background
         auto desertFloor = std::make_unique<Desert>();
         desertFloor->scale = {30.f,1.f,30.f};
-        desertFloor->position.y = -7.7;
+        desertFloor->position.y = -7.7f;
         scene.objects.push_back(move(desertFloor));
 
         // Add players to the scene
@@ -44,6 +48,7 @@ private:
         player1->position.y = -7;
         player1->position.x = -6;
         player1->turnedAt = 1;
+        player1->name = "player1";
         scene.objects.push_back(move(player1));
 
         auto player2 = std::make_unique<Tank>();
@@ -51,7 +56,22 @@ private:
         player2->position.x = 6;
         player2->rotation.z = -ppgso::PI/2.0f;
         player2->turnedAt = 0;
+        player2->name = "player2";
         scene.objects.push_back(move(player2));
+
+        auto wind = std::make_unique<Wind>();
+        scene.wind = move(wind);
+    }
+
+    void initEndScene(){
+        endScene.objects.clear();
+
+        // Create a camera
+        auto camera = std::make_unique<Camera>(60.0f, 1.0f, 0.1f, 100.0f);
+        camera->position.z = -15.0f;
+        endScene.camera = move(camera);
+
+        endScene.objects.push_back(std::make_unique<EndBackground>());
     }
 
 public:
@@ -73,6 +93,7 @@ public:
         glCullFace(GL_BACK);
 
         initScene();
+        initEndScene();
     }
 
     /*!
@@ -157,9 +178,25 @@ public:
         // Clear depth and color buffers
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+        tankCount=0;
+        std::string name;
+        for ( auto& obj : scene.objects ) {
+            auto tank = dynamic_cast<Tank*>(obj.get());
+            if (tank) {
+                tankCount++;
+                name = tank->name;
+            }
+        }
+
         // Update and render all objects
-        scene.update(dt);
-        scene.render();
+        if(tankCount==2) {
+            scene.update(dt);
+            scene.render();
+        }else {
+            EndBackground::texture = std::make_unique<ppgso::Texture>(ppgso::image::loadBMP(name+".bmp"));
+            endScene.update(dt);
+            endScene.render();
+        }
     }
 };
 

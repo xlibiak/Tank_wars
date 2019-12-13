@@ -10,7 +10,11 @@ Camera::Camera(float fow, float ratio, float near, float far) {
 }
 
 void Camera::update() {
-  viewMatrix = lookAt(position, position-back, up);
+    if(tLerp<1) {
+        tLerp += 0.01f;
+        position = glm::lerp(prevPosition, nextPosition, tLerp);
+    }
+    viewMatrix = lookAt(position, position-back, up);
 }
 
 glm::vec3 Camera::cast(double u, double v) {

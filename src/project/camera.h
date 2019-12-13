@@ -15,6 +15,10 @@ public:
   glm::vec3 position{0,0,0};
   glm::vec3 back{0,0,-1};
 
+  float tLerp = 1.f;
+  glm::vec3 prevPosition{0,0,0};
+  glm::vec3 nextPosition{0,0,0};
+
   glm::mat4 viewMatrix;
   glm::mat4 projectionMatrix;
 

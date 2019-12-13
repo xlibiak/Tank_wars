@@ -7,6 +7,7 @@
 
 #include "object.h"
 #include "camera.h"
+#include "Wind.h"
 
 /*
  * Scene is an object that will aggregate all scene related data
@@ -37,6 +38,9 @@ class Scene {
     // Camera object
     std::unique_ptr<Camera> camera;
 
+    // Wind object
+    std::unique_ptr<Wind> wind;
+
     // All objects to be rendered in scene
     std::list< std::unique_ptr<Object> > objects;
 
@@ -44,7 +48,9 @@ class Scene {
     std::map< int, int > keyboard;
 
     // Lights, in this case using only simple directional diffuse lighting
-    glm::vec3 lightDirection{-1.0f, -1.0f, -1.0f};
+    glm::vec3 lightDirection{-1.0f, 0.3f, -1.0f};
+
+    bool shooting = false;
 
     // Store cursor state
     struct {
